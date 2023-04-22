@@ -1,0 +1,83 @@
+version: "3"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    networks:
+      - rabbitmq_network
+  producer:
+    build: 
+      context: ./Producer
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - microservices_network
+      - rabbitmq_network
+    environment:
+      RABBITMQ_HOST: 172.18.0.1
+  consumer_one:
+    build: 
+      context: ./consumer1
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - microservices_network
+      - rabbitmq_network
+    environment:
+      RABBITMQ_HOST: 172.18.0.1
+  consumer_two:
+    build: 
+      context: ./consumer2
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    networks:
+      - microservices_network
+      - rabbitmq_network
+    environment:
+      RABBITMQ_HOST: 172.18.0.1
+  consumer_three:
+    build: 
+      context: ./consumer3
+      dockerfile: Dockerfile
+    ports:
+      - "10000:10000"
+    networks:
+      - microservices_network
+      - rabbitmq_network
+    environment:
+      RABBITMQ_HOST: 172.18.0.1
+  consumer_four:
+    build: 
+      context: ./consumer4
+      dockerfile: Dockerfile
+    ports:
+      - "11000:11000"
+    networks:
+      - microservices_network
+      - rabbitmq_network
+    environment:
+      RABBITMQ_HOST: 172.18.0.1
+networks:
+  rabbitmq_network: 
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: 172.18.0.1
+  microservices_network: 
+# consumer_two:
+#     image: my_consumer_two_image
+#     networks:
+#       - microservices_network
+#     command: python consumer_two.py
+#     environment:
+#       MYSQL_HOST: mysql
+#     depends_on:
+#       - rabbitmq
+#       - mysql
+#     volumes:
+#       - ./consumer_two:/app
